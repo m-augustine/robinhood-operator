@@ -1,0 +1,30 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: equity.augcorp.io
+spec:
+  scope: Cluster
+  group: augcorp.io
+  names:
+    kind: Equity
+    plural: equity
+    singular: equity
+    shortNames:
+      - eq
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+      # subresources: { status: { } }  # comment/uncomment for experiments
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                image:
+                  type: string
+                ticker:
+                  type: string
+              required: ["image", "ticker"]

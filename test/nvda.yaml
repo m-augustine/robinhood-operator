@@ -1,0 +1,7 @@
+apiVersion: augcorp.io/v1beta1
+kind: Equity
+metadata:
+  name: nvda
+spec:
+  image: test
+  ticker: nvdaa
