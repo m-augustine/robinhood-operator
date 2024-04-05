@@ -19,3 +19,4 @@ releases:
     missingFileHandler: Warn
     values:
       - operator.gotmpl
+      - operator.secrets.gotmpl

@@ -1,5 +1,6 @@
 import asyncio
 import pprint
+import os
 
 import kopf
 import pykube
@@ -35,6 +36,7 @@ def create_pod(spec, **kwargs):
         kind: Deployment
         metadata:
             name: equity-{spec.get('ticker', "null")}
+            namespace: robinhood-operator
         spec:
             replicas: 1
             selector:
@@ -42,34 +44,39 @@ def create_pod(spec, **kwargs):
                     equity: {spec.get('ticker', "null")}
             template:
                 metadata:
-                labels:
-                    equity: {spec.get('ticker', "null")}
+                    labels:
+                        equity: {spec.get('ticker', "null")}
                 spec:
                     containers:
-                    - name: equity-{spec.get('ticker', "null")}
+                      - name: equity-{spec.get('ticker', "null")}
                         image: {spec.get('image', "null")}
+                        imagePullPolicy: Always
                         env:
+                            - name: TICKER
+                              value: {spec.get('ticker', "null")}
                             - name: DELAY
-                              value: 30
+                              value: "30"
                             - name: ROBINHOOD_USERNAME
-                              value: 30
+                              value: {os.environ['ROBINHOOD_USERNAME']}
                             - name: ROBINHOOD_PASSWORD
-                              value: 30
-                            - name: ROBINHOOD_otp
-                              value: 30
+                              value: {os.environ['ROBINHOOD_PASSWORD']}
+                            - name: ROBINHOOD_OTP
+                              value: {os.environ['ROBINHOOD_OTP']}
                         ports:
-                        - containerPort: 9200
+                            - containerPort: 9200
     """)
 
-    # # Make it our child: assign the namespace, name, labels, owner references, etc.
-    # kopf.adopt(pod_data)
+    print(deployment)
+
+    # Make it our child: assign the namespace, name, labels, owner references, etc.
+    kopf.adopt(deployment)
     # kopf.label(pod_data, {'application': 'kopf-example-10'})
 
-    # # Actually create an object by requesting the Kubernetes API.
-    # api = pykube.HTTPClient(pykube.KubeConfig.from_env())
-    # pod = pykube.Pod(api, pod_data)
-    # pod.create()
-    # api.session.close()
+    # Actually create an object by requesting the Kubernetes API.
+    api = pykube.HTTPClient(pykube.KubeConfig.from_env())
+    pod = pykube.Deployment(api, deployment)
+    pod.create()
+    api.session.close()
 
 
 @kopf.on.event('pods', labels={'application': 'kopf-example-10'})
