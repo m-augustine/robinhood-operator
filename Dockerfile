@@ -5,4 +5,4 @@ RUN pip install -r /requirements.txt
 
 COPY ./src /src
 
-CMD [ "kopf", "run", "/src//operator/operator.py" ]
+CMD [ "kopf", "run", "/src/operator/operator.py" ]
