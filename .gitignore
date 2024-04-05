@@ -1,4 +1,3 @@
-./env
 ./venv
 ./algos/**/venv
 ./helm

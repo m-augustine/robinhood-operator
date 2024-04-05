@@ -3,5 +3,5 @@ kind: Equity
 metadata:
   name: nvda
 spec:
-  image: test
-  ticker: nvdaa
+  image: mmaugust/algo-equity
+  ticker: nvda

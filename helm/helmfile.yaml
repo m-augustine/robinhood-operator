@@ -1,0 +1,21 @@
+helmDefaults:
+  createNamespace: true
+  wait: false
+  waitForJobs: false
+
+repositories:
+    - name: augcorp
+      url: https://m-augustine.github.io/helmchart/
+
+releases:
+  - name: crds
+    namespace: robinhood-operator
+    chart: charts/crds
+    missingFileHandler: Warn
+
+  - name: operator
+    namespace: robinhood-operator
+    chart: augcorp/helmchart
+    missingFileHandler: Warn
+    values:
+      - operator.gotmpl

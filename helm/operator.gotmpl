@@ -1,0 +1,18 @@
+replicaCount: 1
+
+image:
+  repository: mmaugust/robinhood-operator
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+config:
+  
+
+# service:
+#   type: ClusterIP
+#   ports: 
+#     metrics:
+#       port: 9200
+#       containerPort: 9200
+#       protocol: TCP

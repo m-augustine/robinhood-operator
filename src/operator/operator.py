@@ -26,19 +26,40 @@ def delete(body, meta, spec, status, **kwargs):
     pass
 
 @kopf.on.create('equity')
-def create_pod(**kwargs):
+def create_pod(spec, **kwargs):
     print("Whamo")
 
-    # # Render the pod yaml with some spec fields used in the template.
-    # pod_data = yaml.safe_load(f"""
-    #     apiVersion: v1
-    #     kind: Pod
-    #     spec:
-    #       containers:
-    #       - name: the-only-one
-    #         image: busybox
-    #         command: ["sh", "-x", "-c", "sleep 1"]
-    # """)
+    # Render the pod yaml with some spec fields used in the template.
+    deployment = yaml.safe_load(f"""
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+            name: equity-{spec.get('ticker', "null")}
+        spec:
+            replicas: 1
+            selector:
+                matchLabels:
+                    equity: {spec.get('ticker', "null")}
+            template:
+                metadata:
+                labels:
+                    equity: {spec.get('ticker', "null")}
+                spec:
+                    containers:
+                    - name: equity-{spec.get('ticker', "null")}
+                        image: {spec.get('image', "null")}
+                        env:
+                            - name: DELAY
+                              value: 30
+                            - name: ROBINHOOD_USERNAME
+                              value: 30
+                            - name: ROBINHOOD_PASSWORD
+                              value: 30
+                            - name: ROBINHOOD_otp
+                              value: 30
+                        ports:
+                        - containerPort: 9200
+    """)
 
     # # Make it our child: assign the namespace, name, labels, owner references, etc.
     # kopf.adopt(pod_data)
